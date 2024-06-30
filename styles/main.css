@@ -2,10 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 :root{
-    --highlight: #6363f1;
+    --highlight: #5B5BF1;
     --highlight-text: #F9F9F9;
     --dark-text: #343434;
-    --highlight-opaque: #e5e5f8;
+    --highlight-opaque: #FFFFFF;
+    --bg-color: #FFFFFF;
 }
 
 * {
@@ -20,9 +21,7 @@
 
 body {
     width: 100%;
-    background-image: url('../images/');
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: var(--bg-color);
 }
 
 /*****************************************************************************/
@@ -97,6 +96,7 @@ h1,
     scale: 1.05;
     color: var(--highlight);
     background-color: var(--highlight-opaque);
+    box-shadow: 0px 0px 0.8rem 0px rgba(91, 91, 241, 0.4);
 }
 
 .icons {
