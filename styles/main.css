@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+:root{
+    --highlight: #6363f1;
+    --highlight-text: #F9F9F9;
+    --dark-text: #343434;
+    --highlight-opaque: #e5e5f8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    box-sizing: border-box;
+    color: var(--dark-text);
+}
+
+body {
+    width: 100%;
+    background-image: url('../images/');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/*****************************************************************************/
+
+#main-section {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4rem 4rem 4rem 7rem;
+}
+
+/*****************************************************************************/
+
+#start-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#crd{
+    margin-bottom: 0.5rem;
+    position: relative;
+    left: 0.2rem;
+    font-weight: 600;
+}
+
+h1,
+.titulo-destacado {
+    font-size: 2.8rem;
+    letter-spacing: -2px;
+    margin-bottom: 1.2rem;
+    line-height: 2.9rem;
+}
+
+.titulo-destacado, .texto-destacado {
+    color: var(--highlight);
+}
+
+#welcum-text{
+    position: relative;
+    left: 0.2rem;
+    margin-bottom: 1.6rem;
+}
+
+#start-button {
+    width: fit-content;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.4rem;
+    color: var(--highlight-text);
+    background-color: var(--highlight);
+    transition: 0.3s cubic-bezier(0, .37, .32, 1);
+    position: relative;
+    left: 0.2rem;
+}
+
+#start-button::after {
+    content: 'arrow_right_alt';
+    font-family: 'Material Icons';
+    font-size: 1.4em;
+    margin-left: 0.4em;
+    vertical-align: middle;
+}
+
+#start-button:hover{
+    transition: 0.3s cubic-bezier(0,.37,.32,1);
+    scale: 1.05;
+    color: var(--highlight);
+    background-color: var(--highlight-opaque);
+}
+
+.icons {
+    color: var(--highlight-text);
+    margin-left: 0.4rem;
+    vertical-align: middle;
+}
+
+/*****************************************************************************/
+
+
+#img-container{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#welcum-img{
+    width: 22rem;
+    position: relative;
+    left: 1.2rem;
+}
+
+/*****************************************************************************/
+
