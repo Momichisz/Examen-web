@@ -40,9 +40,9 @@
 
         <div class="card hidden col-lg-6" id="test-desc">
             <div class="card-header px-4">
-                <span id="title-desc">Reglas de tu examen en línea</span>
+                <span id="title-desc"><small class="text-muted">Reglas de tu Examen en Línea</small></span>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <ol id="rules">
                     <li>Solo tendrás <span class="texto-destacado">15 segundos</span> para responder cada pregunta.</li>
                     <li>Una vez que selecciones tu respuesta, no puedes cambiarla.</li>
@@ -51,8 +51,24 @@
                     <li> Obtendrás puntos con base a tus respuestas correctas.</li>
                 </ol>
             </div>
-            <div class="card-footer">
-                <small class="text-muted">oala</small>
+
+            <div class="card-footer custom-position">
+                <button type="button" class="btn btn-outline-danger custom-margin" id="back">Regresar</button>
+                <button type="button" class="btn btn-primary" id="continuar">Continuar</button>
+            </div>
+        </div>
+
+        <div class="card hidden col-lg-6" id="pregunta1">
+            <div class="card-header px-4">
+                <span class="title-card"><small class="text-muted">Examen en Línea</small></span>
+            </div>
+            <div class="card-body">
+                <p class="pregunta">1. ¿Cuál de las siguientes bases de datos ha sido compatible con PHP casi desde el principio?</p>
+            </div>
+
+            <div class="card-footer custom-position">
+                <button type="button" class="btn btn-outline-danger custom-margin" id="back">Regresar</button>
+                <button type="button" class="btn btn-primary" id="continuar">Continuar</button>
             </div>
         </div>
 
