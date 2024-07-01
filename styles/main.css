@@ -129,6 +129,22 @@ h1,
 }
 
 .visible {
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.3s cubic-bezier(0,.37,.32,1);
 }
+
+/*****************************************************************************/
+
+#test-desc{
+    display: none;
+}
+
+#title-desc{
+    font-size: 1.2rem;
+    letter-spacing: -0.4px;
+}
+
+li{
+    font-weight: 400;
+}
+
