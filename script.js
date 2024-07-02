@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const testDescContainer = document.getElementById('test-desc');
     const backButton = document.getElementById('back');
     const mainSection = document.getElementById('main-section');
+    let puntaje = 0;
 
     let preguntas = [{
             pregunta: "¿Cuál es la capital de Francia?",
@@ -226,52 +227,55 @@ document.addEventListener('DOMContentLoaded', function () {
         startButton.addEventListener('click', function () {
             startContainer.classList.add('hidden');
             startImgContainer.classList.add('hidden');
-
+    
             setTimeout(() => {
                 startContainer.style.display = 'none';
                 startImgContainer.style.display = 'none';
-
-                testDescContainer.style.display = 'block'; // Make it block before applying opacity
-                requestAnimationFrame(() => { // Ensure the element is rendered before adding class
+    
+                testDescContainer.style.display = 'block';
+                requestAnimationFrame(() => { 
                     testDescContainer.classList.add('visible');
                 });
-
+    
                 mainSection.style.justifyContent = 'center';
                 mainSection.style.alignItems = 'center';
-            }, 500); // Duración de la transición en milisegundos
+    
+               
+                generarNuevaPregunta();
+            }, 500); 
         });
     }
-
+    
     if (backButton) {
         backButton.addEventListener('click', function () {
             testDescContainer.classList.remove('visible');
             testDescContainer.classList.add('hidden');
-
+    
             setTimeout(() => {
                 testDescContainer.style.display = 'none';
-
+    
                 startContainer.style.display = 'flex';
                 startImgContainer.style.display = 'flex';
-
+    
                 requestAnimationFrame(() => {
                     startContainer.classList.remove('hidden');
                     startImgContainer.classList.remove('hidden');
                 });
-
-                // Reset centering styles of mainSection
+    
+                
                 mainSection.style.justifyContent = 'space-between';
                 mainSection.style.alignItems = 'flex-start';
-            }, 500); // Duración de la transición en milisegundos
+            }, 500); 
         });
     }
-
+    
     /////////////////////////////////////////////////////////////////////////////
-
+    
     function generarPregunta() {
         const preguntaRandom = preguntas[Math.floor(Math.random() * preguntas.length)];
         return preguntaRandom;
     }
-
+    
     function mezclarRespuestas(pregunta) {
         const respuestas = [
             pregunta.respuestaCorrecta,
@@ -285,107 +289,119 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return respuestas;
     }
-
-
+    
     /////////////////////////////////////////////////////////////////////////////
-
-
-
-    const continuarButton = document.getElementById('continuar');
+    
     let contadorPregunta = 0;
-
-    if (continuarButton) {
-
-        continuarButton.addEventListener('click', function () {
-
-            contadorPregunta = contadorPregunta + 1;
-            const preguntaSeleccionada = generarPregunta();
-            const respuestasMezcladas = mezclarRespuestas(preguntaSeleccionada);
-
-            testDescContainer.classList.remove('visible');
-            testDescContainer.classList.add('hidden');
-
-            setTimeout(() => {
-
-                testDescContainer.style.display = 'none';
-
-                const newContainer = document.createElement('div');
-                newContainer.classList.add('col-lg-6', 'new-container', 'visible');
-                newContainer.innerHTML = `
-                    <div class="card">
-                        <div class="card-header">
-                            <div> Pregunta número  <span class = "texto-destacado">#${contadorPregunta} </span> </div>
-                            <div id="temporizador" class="temporizador">15</div>
-                        </div>
-                        <div class="card-body bodycardpregunta">
-                            <h5 class="card-title pb-2">${preguntaSeleccionada.pregunta}</h5>
-                            ${respuestasMezcladas.map(opcion => `
-                                <button class="botonsito opcion" data-value="${opcion}">${opcion}</button>
-                            `).join('')}
-                        </div>
-                        
-                        <div class="card-footer custom-position-footer">
-                            <span class = "text-muted"> ${contadorPregunta} de 10 preguntas </span>
-                            <button type="button" class="btn btn-primary" id="siguiente">Continuar</button>
-                        </div>
-
-                    </div>`;
+    const totalPreguntas = 10;
+    
+    function generarNuevaPregunta() {
+        if (contadorPregunta >= totalPreguntas) {
+            const endContainer = document.createElement('div');
+            endContainer.classList.add('col-lg-6', 'final', 'visible');
+            endContainer.id('mensaje-final');
+            newContainer.innerHTML = `
+            <div class="card">
+                
+                <div class="card-body bodycardpregunta">
                     
-                mainSection.appendChild(newContainer);
+                </div>
+                <div class="card-footer custom-position-footer">
+                    <span class = "text-muted"> ${contadorPregunta} de ${totalPreguntas} preguntas </span>
+                    <button type="button" class="btn btn-primary" id="siguiente" style="display: none;">Continuar</button>
+                </div>
+            </div>`;
 
-                const siguientePregunta = newContainer.querySelector('#siguiente');
-                const botonesOpcion = newContainer.querySelectorAll('.opcion');
-
-                const temporizadorElemento = newContainer.querySelector('#temporizador');
-                let tiempoRestante = 15;
-
-                // Temporizador de 15 segundos
-                const intervalo = setInterval(() => {
-                    tiempoRestante -= 1;
-                    temporizadorElemento.textContent = tiempoRestante;
-                    if (tiempoRestante <= 0) {
-                        clearInterval(intervalo);
-                        desactivarBotones();
-                    }
-                }, 1000);
-
-                botonesOpcion.forEach(boton => {
-                    boton.addEventListener('click', function () {
-
-                        siguientePregunta.style.display = 'block';
-                        const seleccion = boton.getAttribute('data-value');
-
-                        clearInterval(intervalo);
-                        desactivarBotones();
-
-                        botonesOpcion.forEach(btn => btn.disabled = true);
-
-                        botonesOpcion.forEach(btn => {
-                            if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
-                                btn.classList.add('correcto');
-                            } else if (btn.getAttribute('data-value') === seleccion) {
-                                btn.classList.add('incorrecto');
-                            }
-                        });
-                    });
-                });
-
-                function desactivarBotones() {
+            return;
+        }
+    
+        contadorPregunta++;
+        const preguntaSeleccionada = generarPregunta();
+        const respuestasMezcladas = mezclarRespuestas(preguntaSeleccionada);
+    
+        testDescContainer.classList.remove('visible');
+        testDescContainer.classList.add('hidden');
+    
+        setTimeout(() => {
+            testDescContainer.style.display = 'none';
+    
+            const newContainer = document.createElement('div');
+            newContainer.classList.add('col-lg-6', 'new-container', 'visible');
+            newContainer.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <div> Pregunta número  <span class = "texto-destacado">#${contadorPregunta} </span> </div>
+                        <div id="temporizador" class="temporizador">15</div>
+                    </div>
+                    <div class="card-body bodycardpregunta">
+                        <h5 class="card-title pb-2">${preguntaSeleccionada.pregunta}</h5>
+                        ${respuestasMezcladas.map(opcion => `
+                            <button class="botonsito opcion" data-value="${opcion}">${opcion}</button>
+                        `).join('')}
+                    </div>
+                    <div class="card-footer custom-position-footer">
+                        <span class = "text-muted"> ${contadorPregunta} de ${totalPreguntas} preguntas </span>
+                        <button type="button" class="btn btn-primary" id="siguiente" style="display: none;">Continuar</button>
+                    </div>
+                </div>`;
+    
+            mainSection.appendChild(newContainer);
+    
+            const siguientePregunta = newContainer.querySelector('#siguiente');
+            const botonesOpcion = newContainer.querySelectorAll('.opcion');
+    
+            const temporizadorElemento = newContainer.querySelector('#temporizador');
+            let tiempoRestante = 15;
+    
+            // Temporizador de 15 segundos
+            const intervalo = setInterval(() => {
+                tiempoRestante -= 1;
+                temporizadorElemento.textContent = tiempoRestante;
+                if (tiempoRestante <= 0) {
+                    clearInterval(intervalo);
+                    desactivarBotones();
+                }
+            }, 1000);
+    
+            botonesOpcion.forEach(boton => {
+                boton.addEventListener('click', function () {
+                    siguientePregunta.style.display = 'block';
+                    const seleccion = boton.getAttribute('data-value');
+    
+                    clearInterval(intervalo);
+                    desactivarBotones();
+    
+                    botonesOpcion.forEach(btn => btn.disabled = true);
+    
                     botonesOpcion.forEach(btn => {
-                        btn.disabled = true;
                         if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
                             btn.classList.add('correcto');
-                        } else if (!btn.classList.contains('correcto') && !btn.classList.contains('incorrecto')) {
+                        } else if (btn.getAttribute('data-value') === seleccion) {
                             btn.classList.add('incorrecto');
                         }
                     });
-                    siguientePregunta.style.display = 'block';
-                }
-                
-            }, 500)
-
-        })
+                });
+            });
+    
+            siguientePregunta.addEventListener('click', function () {
+                newContainer.remove();
+                generarNuevaPregunta();
+            });
+    
+            function desactivarBotones() {
+                botonesOpcion.forEach(btn => {
+                    btn.disabled = true;
+                    if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
+                        btn.classList.add('correcto');
+                    } else if (!btn.classList.contains('correcto') && !btn.classList.contains('incorrecto')) {
+                        btn.classList.add('incorrecto');
+                    }
+                });
+                siguientePregunta.style.display = 'block';
+            }
+        }, 500);
     }
+    
 
 
 
