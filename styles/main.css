@@ -74,7 +74,6 @@ h1,
     width: fit-content;
     padding: 0.3rem 0.9rem;
     font-size: 0.9rem;
-    font-weight: 600;
     border: none;
     border-radius: 0.4rem;
     color: var(--highlight-text);
@@ -179,4 +178,19 @@ li{
 
 .bodycardpregunta{
     padding: 1.6rem 2rem;
+}
+
+.custom-position-footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+}
+
+.text-muted{
+    font-size: 0.85rem;
+}
+
+#siguiente{
+    display: none;
 }

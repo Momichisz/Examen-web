@@ -322,19 +322,31 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <button class="btn btn-primary opcion" data-value="${opcion}">${opcion}</button>
                             `).join('')}
                         </div>
-                    </div>
-                `;
+                        
+                        <div class="card-footer custom-position-footer">
+                            <span class = "text-muted"> ${contadorPregunta} de 10 preguntas </span>
+                            <button type="button" class="btn btn-primary" id="siguiente">Continuar</button>
+                        </div>
+
+                    </div>`;
                 mainSection.appendChild(newContainer);
+                
+                const siguientePregunta = newContainer.querySelector('#siguiente');
 
                 const botonesOpcion = newContainer.querySelectorAll('.opcion');
                 botonesOpcion.forEach(boton => {
                     boton.addEventListener('click', function () {
+
+                        siguientePregunta.style.display	= 'block';
+
                         const seleccion = boton.getAttribute('data-value');
                         if (seleccion === preguntaSeleccionada.respuestaCorrecta) {
                             alert('¡Respuesta correcta!');
                         } else {
                             alert('Respuesta incorrecta.');
                         }
+
+
                     });
                 });
 
