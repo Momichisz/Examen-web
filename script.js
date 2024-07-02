@@ -314,12 +314,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 newContainer.innerHTML = `
                     <div class="card">
                         <div class="card-header">
-                            Pregunta número <span class = "texto-destacado">#${contadorPregunta} </span>
+                            <div> Pregunta número  <span class = "texto-destacado">#${contadorPregunta} </span> </div>
+                            <div id="temporizador" class="temporizador">15</div>
                         </div>
                         <div class="card-body bodycardpregunta">
                             <h5 class="card-title pb-2">${preguntaSeleccionada.pregunta}</h5>
                             ${respuestasMezcladas.map(opcion => `
-                                <button class="btn btn-primary opcion" data-value="${opcion}">${opcion}</button>
+                                <button class="botonsito opcion" data-value="${opcion}">${opcion}</button>
                             `).join('')}
                         </div>
                         
@@ -329,27 +330,58 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
 
                     </div>`;
+                    
                 mainSection.appendChild(newContainer);
-                
-                const siguientePregunta = newContainer.querySelector('#siguiente');
 
+                const siguientePregunta = newContainer.querySelector('#siguiente');
                 const botonesOpcion = newContainer.querySelectorAll('.opcion');
+
+                const temporizadorElemento = newContainer.querySelector('#temporizador');
+                let tiempoRestante = 15;
+
+                // Temporizador de 15 segundos
+                const intervalo = setInterval(() => {
+                    tiempoRestante -= 1;
+                    temporizadorElemento.textContent = tiempoRestante;
+                    if (tiempoRestante <= 0) {
+                        clearInterval(intervalo);
+                        desactivarBotones();
+                    }
+                }, 1000);
+
                 botonesOpcion.forEach(boton => {
                     boton.addEventListener('click', function () {
 
-                        siguientePregunta.style.display	= 'block';
-
+                        siguientePregunta.style.display = 'block';
                         const seleccion = boton.getAttribute('data-value');
-                        if (seleccion === preguntaSeleccionada.respuestaCorrecta) {
-                            alert('¡Respuesta correcta!');
-                        } else {
-                            alert('Respuesta incorrecta.');
-                        }
 
+                        clearInterval(intervalo);
+                        desactivarBotones();
 
+                        botonesOpcion.forEach(btn => btn.disabled = true);
+
+                        botonesOpcion.forEach(btn => {
+                            if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
+                                btn.classList.add('correcto');
+                            } else if (btn.getAttribute('data-value') === seleccion) {
+                                btn.classList.add('incorrecto');
+                            }
+                        });
                     });
                 });
 
+                function desactivarBotones() {
+                    botonesOpcion.forEach(btn => {
+                        btn.disabled = true;
+                        if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
+                            btn.classList.add('correcto');
+                        } else if (!btn.classList.contains('correcto') && !btn.classList.contains('incorrecto')) {
+                            btn.classList.add('incorrecto');
+                        }
+                    });
+                    siguientePregunta.style.display = 'block';
+                }
+                
             }, 500)
 
         })
