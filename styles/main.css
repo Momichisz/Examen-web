@@ -166,3 +166,17 @@ li{
 #pregunta1{
     display: none;
 }
+
+.opcion{
+    width: 100%;
+    text-align: left;
+    background-color: var(--highlight-opaque);
+    border: solid 0.01rem var(--highlight);
+    padding: 0.42rem 0.9rem;
+    margin-bottom: 0.5rem;
+    color: var(--highlight);
+}
+
+.bodycardpregunta{
+    padding: 1.6rem 2rem;
+}
