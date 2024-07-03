@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const testDescContainer = document.getElementById('test-desc');
     const backButton = document.getElementById('back');
     const mainSection = document.getElementById('main-section');
-    let puntaje = 0;
 
     let preguntas = [{
             pregunta: "¿Cuál es la capital de Francia?",
@@ -227,55 +226,52 @@ document.addEventListener('DOMContentLoaded', function () {
         startButton.addEventListener('click', function () {
             startContainer.classList.add('hidden');
             startImgContainer.classList.add('hidden');
-    
+
             setTimeout(() => {
                 startContainer.style.display = 'none';
                 startImgContainer.style.display = 'none';
-    
-                testDescContainer.style.display = 'block';
-                requestAnimationFrame(() => { 
+
+                testDescContainer.style.display = 'block'; // Make it block before applying opacity
+                requestAnimationFrame(() => { // Ensure the element is rendered before adding class
                     testDescContainer.classList.add('visible');
                 });
-    
+
                 mainSection.style.justifyContent = 'center';
                 mainSection.style.alignItems = 'center';
-    
-               
-                generarNuevaPregunta();
-            }, 500); 
+            }, 500); // Duración de la transición en milisegundos
         });
     }
-    
+
     if (backButton) {
         backButton.addEventListener('click', function () {
             testDescContainer.classList.remove('visible');
             testDescContainer.classList.add('hidden');
-    
+
             setTimeout(() => {
                 testDescContainer.style.display = 'none';
-    
+
                 startContainer.style.display = 'flex';
                 startImgContainer.style.display = 'flex';
-    
+
                 requestAnimationFrame(() => {
                     startContainer.classList.remove('hidden');
                     startImgContainer.classList.remove('hidden');
                 });
-    
-                
+
+                // Reset centering styles of mainSection
                 mainSection.style.justifyContent = 'space-between';
                 mainSection.style.alignItems = 'flex-start';
-            }, 500); 
+            }, 500); // Duración de la transición en milisegundos
         });
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////
-    
+
     function generarPregunta() {
         const preguntaRandom = preguntas[Math.floor(Math.random() * preguntas.length)];
         return preguntaRandom;
     }
-    
+
     function mezclarRespuestas(pregunta) {
         const respuestas = [
             pregunta.respuestaCorrecta,
@@ -289,22 +285,75 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return respuestas;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////
-    
+
     let contadorPregunta = 0;
-    const totalPreguntas = 10;
-    
-    function generarNuevaPregunta() {
-        if (contadorPregunta >= totalPreguntas) {
-            const endContainer = document.createElement('div');
-            endContainer.classList.add('col-lg-6', 'final', 'visible');
-            endContainer.id('mensaje-final');
-            newContainer.innerHTML = `
+const totalPreguntas = 10;
+let puntaje = 0;
+
+function mostrarResultado() {
+    let mensaje = '';
+    let imagen = '';
+
+    if (puntaje >= 8) {
+        mensaje = `¡<span class="texto-destacado">Felicitaciones</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos!`;
+        imagen = 'images/10.png';
+    } else if (puntaje >= 5 && puntaje <= 7) {
+        mensaje = `<span class="texto-destacado">¡Qué bien!</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos`;
+        imagen = 'images/7.png';
+    } else if (puntaje >= 1 && puntaje <= 4) {
+        mensaje = `<span class="texto-destacado">Hay que estudiar más</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos`;
+        imagen = 'images/4.png';
+    } else {
+        mensaje = `<span class="texto-destacado">Lo siento</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos`;
+        imagen = 'images/0.png';
+    }
+
+    const endContainer = document.createElement('div');
+    endContainer.classList.add('col-lg-8', 'final', 'visible');
+    endContainer.innerHTML = `
+        <div class="card" style="width: 28rem;">
+            <img src="${imagen}" class="card-img-top" alt="calificación">
+            <div class="card-body">
+                <h5 class="card-title mensaje">${mensaje}</h5>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    `;
+
+    mainSection.appendChild(endContainer);
+}
+
+function generarNuevaPregunta() {
+    if (contadorPregunta >= totalPreguntas) {
+        mostrarResultado();
+        return;
+    }
+
+    contadorPregunta++;
+    const preguntaSeleccionada = generarPregunta();
+    const respuestasMezcladas = mezclarRespuestas(preguntaSeleccionada);
+
+    testDescContainer.classList.remove('visible');
+    testDescContainer.classList.add('hidden');
+
+    setTimeout(() => {
+        testDescContainer.style.display = 'none';
+
+        const newContainer = document.createElement('div');
+        newContainer.classList.add('col-lg-6', 'new-container', 'visible');
+        newContainer.innerHTML = `
             <div class="card">
-                
+                <div class="card-header">
+                    <div> Pregunta número  <span class = "texto-destacado">#${contadorPregunta} </span> </div>
+                    <div id="temporizador" class="temporizador">15</div>
+                </div>
                 <div class="card-body bodycardpregunta">
-                    
+                    <h5 class="card-title pb-2">${preguntaSeleccionada.pregunta}</h5>
+                    ${respuestasMezcladas.map(opcion => `
+                        <button class="botonsito opcion" data-value="${opcion}">${opcion}</button>
+                    `).join('')}
                 </div>
                 <div class="card-footer custom-position-footer">
                     <span class = "text-muted"> ${contadorPregunta} de ${totalPreguntas} preguntas </span>
@@ -312,95 +361,76 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </div>`;
 
-            return;
-        }
-    
-        contadorPregunta++;
-        const preguntaSeleccionada = generarPregunta();
-        const respuestasMezcladas = mezclarRespuestas(preguntaSeleccionada);
-    
-        testDescContainer.classList.remove('visible');
-        testDescContainer.classList.add('hidden');
-    
-        setTimeout(() => {
-            testDescContainer.style.display = 'none';
-    
-            const newContainer = document.createElement('div');
-            newContainer.classList.add('col-lg-6', 'new-container', 'visible');
-            newContainer.innerHTML = `
-                <div class="card">
-                    <div class="card-header">
-                        <div> Pregunta número  <span class = "texto-destacado">#${contadorPregunta} </span> </div>
-                        <div id="temporizador" class="temporizador">15</div>
-                    </div>
-                    <div class="card-body bodycardpregunta">
-                        <h5 class="card-title pb-2">${preguntaSeleccionada.pregunta}</h5>
-                        ${respuestasMezcladas.map(opcion => `
-                            <button class="botonsito opcion" data-value="${opcion}">${opcion}</button>
-                        `).join('')}
-                    </div>
-                    <div class="card-footer custom-position-footer">
-                        <span class = "text-muted"> ${contadorPregunta} de ${totalPreguntas} preguntas </span>
-                        <button type="button" class="btn btn-primary" id="siguiente" style="display: none;">Continuar</button>
-                    </div>
-                </div>`;
-    
-            mainSection.appendChild(newContainer);
-    
-            const siguientePregunta = newContainer.querySelector('#siguiente');
-            const botonesOpcion = newContainer.querySelectorAll('.opcion');
-    
-            const temporizadorElemento = newContainer.querySelector('#temporizador');
-            let tiempoRestante = 15;
-    
-            // Temporizador de 15 segundos
-            const intervalo = setInterval(() => {
-                tiempoRestante -= 1;
-                temporizadorElemento.textContent = tiempoRestante;
-                if (tiempoRestante <= 0) {
-                    clearInterval(intervalo);
-                    desactivarBotones();
-                }
-            }, 1000);
-    
-            botonesOpcion.forEach(boton => {
-                boton.addEventListener('click', function () {
-                    siguientePregunta.style.display = 'block';
-                    const seleccion = boton.getAttribute('data-value');
-    
-                    clearInterval(intervalo);
-                    desactivarBotones();
-    
-                    botonesOpcion.forEach(btn => btn.disabled = true);
-    
-                    botonesOpcion.forEach(btn => {
-                        if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
-                            btn.classList.add('correcto');
-                        } else if (btn.getAttribute('data-value') === seleccion) {
-                            btn.classList.add('incorrecto');
-                        }
-                    });
-                });
-            });
-    
-            siguientePregunta.addEventListener('click', function () {
-                newContainer.remove();
-                generarNuevaPregunta();
-            });
-    
-            function desactivarBotones() {
+        mainSection.appendChild(newContainer);
+
+        const siguientePregunta = newContainer.querySelector('#siguiente');
+        const botonesOpcion = newContainer.querySelectorAll('.opcion');
+
+        const temporizadorElemento = newContainer.querySelector('#temporizador');
+        let tiempoRestante = 15;
+
+        // Temporizador de 15 segundos
+        const intervalo = setInterval(() => {
+            tiempoRestante -= 1;
+            temporizadorElemento.textContent = tiempoRestante;
+            if (tiempoRestante <= 0) {
+                clearInterval(intervalo);
+                desactivarBotones();
+            }
+        }, 1000);
+
+        botonesOpcion.forEach(boton => {
+            boton.addEventListener('click', function () {
+                siguientePregunta.style.display = 'block';
+                const seleccion = boton.getAttribute('data-value');
+
+                clearInterval(intervalo);
+                desactivarBotones(seleccion);
+
+                botonesOpcion.forEach(btn => btn.disabled = true);
+
                 botonesOpcion.forEach(btn => {
-                    btn.disabled = true;
                     if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
                         btn.classList.add('correcto');
-                    } else if (!btn.classList.contains('correcto') && !btn.classList.contains('incorrecto')) {
+                    } else if (btn.getAttribute('data-value') === seleccion) {
                         btn.classList.add('incorrecto');
                     }
                 });
-                siguientePregunta.style.display = 'block';
-            }
-        }, 500);
-    }
+            });
+        });
+
+        siguientePregunta.addEventListener('click', function () {
+            newContainer.remove();
+            generarNuevaPregunta();
+        });
+
+        function desactivarBotones(seleccion = null) {
+            botonesOpcion.forEach(btn => {
+                btn.disabled = true;
+                if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
+                    btn.classList.add('correcto');
+                    if (seleccion === preguntaSeleccionada.respuestaCorrecta) {
+                        puntaje++; 
+                        console.log(puntaje);
+                    }
+                } else if (!btn.classList.contains('correcto') && !btn.classList.contains('incorrecto')) {
+                    btn.classList.add('incorrecto');
+                }
+            });
+            siguientePregunta.style.display = 'block';
+        }
+    }, 500);
+}
+
+const continuarButton = document.getElementById('continuar');
+
+if (continuarButton) {
+    continuarButton.addEventListener('click', function () {
+        generarNuevaPregunta();
+    });
+}
+
+
     
 
 
@@ -409,12 +439,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
-
-
-
-
-
-
-
-});
+}); // Final
