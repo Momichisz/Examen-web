@@ -331,17 +331,39 @@ document.addEventListener('DOMContentLoaded', function () {
     
         mainSection.appendChild(endContainer);
     
-        document.getElementById('back').addEventListener('click', function() {
+        const backButton = endContainer.querySelector('#back');
+        const repeatButton = endContainer.querySelector('#repeat');
+    
+        backButton.addEventListener('click', function() {
             // Acción para regresar a la pantalla de inicio
-            // Aquí puedes redirigir a la pantalla de inicio o realizar alguna otra acción
-            window.location.href = 'index.html'; // Cambia 'index.html' por la URL de tu pantalla de inicio
+            endContainer.classList.remove('visible');
+            endContainer.classList.add('hidden');
+    
+            setTimeout(() => {
+                endContainer.remove();
+                endContainer.style.display = 'none';
+                // Mostrar pantalla de bienvenida
+                startContainer.style.display = 'flex';
+                startImgContainer.style.display = 'flex';
+    
+                // Asegurarse de quitar las clases 'hidden'
+                requestAnimationFrame(() => {
+                    startContainer.classList.remove('hidden');
+                    startImgContainer.classList.remove('hidden');
+                });
+    
+                // Resetear estilos de centrado de mainSection
+                mainSection.style.justifyContent = 'space-between';
+                mainSection.style.alignItems = 'flex-start';
+            }, 500); // Duración de la transición en milisegundos
         });
     
-        document.getElementById('repeat').addEventListener('click', function() {
+        repeatButton.addEventListener('click', function() {
             // Acción para repetir el examen
             resetQuiz();
         });
     }
+    
     
     function resetQuiz() {
         contadorPregunta = 0;
