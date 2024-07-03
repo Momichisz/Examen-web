@@ -270,9 +270,9 @@ document.addEventListener('DOMContentLoaded', function () {
         let preguntaRandom;
     do {
         preguntaRandom = preguntas[Math.floor(Math.random() * preguntas.length)];
-    } while (preguntasMostradas.includes(preguntaRandom)); // Verifica que la pregunta no se haya mostrado antes
+    } while (preguntasMostradas.includes(preguntaRandom));
 
-    preguntasMostradas.push(preguntaRandom); // Añade la pregunta al array de preguntas mostradas
+    preguntasMostradas.push(preguntaRandom); 
     return preguntaRandom;
 
     }
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let contadorPregunta = 0;
     const totalPreguntas = 10;
     let puntaje = 0;
-    let preguntasMostradas = []; // Array para almacenar las preguntas ya mostradas
+    let preguntasMostradas = []; 
     
     function mostrarResultado() {
         let mensaje = '';
@@ -335,27 +335,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const repeatButton = endContainer.querySelector('#repeat');
     
         backButton.addEventListener('click', function() {
-            // Acción para regresar a la pantalla de inicio
-            endContainer.classList.remove('visible');
+            
+            endContainer.classList.remove('remove');
             endContainer.classList.add('hidden');
-    
+            endContainer.style.display = 'none';
+            endContainer.remove();
+
+            startContainer.style.display = 'flex';
+            startImgContainer.style.display = 'flex';
+            startImgContainer.classList.remove('hidden');
+            startImgContainer.classList.add('visible');
+            startContainer.classList.remove('hidden');
+            startContainer.classList.add('visible');
+            
             setTimeout(() => {
-                endContainer.remove();
-                endContainer.style.display = 'none';
-                // Mostrar pantalla de bienvenida
-                startContainer.style.display = 'flex';
-                startImgContainer.style.display = 'flex';
-    
-                // Asegurarse de quitar las clases 'hidden'
-                requestAnimationFrame(() => {
-                    startContainer.classList.remove('hidden');
-                    startImgContainer.classList.remove('hidden');
-                });
-    
-                // Resetear estilos de centrado de mainSection
+
+                
+
+                // Reset centering styles of mainSection
                 mainSection.style.justifyContent = 'space-between';
                 mainSection.style.alignItems = 'flex-start';
             }, 500); // Duración de la transición en milisegundos
+
         });
     
         repeatButton.addEventListener('click', function() {
@@ -409,6 +410,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         testDescContainer.classList.remove('visible');
         testDescContainer.classList.add('hidden');
+
     
         setTimeout(() => {
             testDescContainer.style.display = 'none';
@@ -498,17 +500,12 @@ document.addEventListener('DOMContentLoaded', function () {
     
     if (continuarButton) {
         continuarButton.addEventListener('click', function () {
+            contadorPregunta = 0;
+        puntaje = 0;
+        preguntasMostradas = [];
             generarNuevaPregunta();
         });
     }
-    
-
-    
-
-
-
-
-
 
 
 }); // Final
