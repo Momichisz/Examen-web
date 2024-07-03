@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ];
 
-    let preguntasSeleccionadas = [];
+    let preguntasMostradas = [];
 
     //////////////////////////////////////////////////////////////
 
@@ -268,8 +268,14 @@ document.addEventListener('DOMContentLoaded', function () {
     /////////////////////////////////////////////////////////////////////////////
 
     function generarPregunta() {
-        const preguntaRandom = preguntas[Math.floor(Math.random() * preguntas.length)];
-        return preguntaRandom;
+        let preguntaRandom;
+    do {
+        preguntaRandom = preguntas[Math.floor(Math.random() * preguntas.length)];
+    } while (preguntasMostradas.includes(preguntaRandom)); // Verifica que la pregunta no se haya mostrado antes
+
+    preguntasMostradas.push(preguntaRandom); // Añade la pregunta al array de preguntas mostradas
+    return preguntaRandom;
+
     }
 
     function mezclarRespuestas(pregunta) {
@@ -360,7 +366,7 @@ function generarNuevaPregunta() {
                     <button type="button" class="btn btn-primary" id="siguiente" style="display: none;">Continuar</button>
                 </div>
             </div>`;
-
+            console.log(preguntaSeleccionada.respuestaCorrecta);
         mainSection.appendChild(newContainer);
 
         const siguientePregunta = newContainer.querySelector('#siguiente');
