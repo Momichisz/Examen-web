@@ -218,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ];
 
-    let preguntasMostradas = [];
 
     //////////////////////////////////////////////////////////////
 
@@ -295,147 +294,192 @@ document.addEventListener('DOMContentLoaded', function () {
     /////////////////////////////////////////////////////////////////////////////
 
     let contadorPregunta = 0;
-const totalPreguntas = 10;
-let puntaje = 0;
-
-function mostrarResultado() {
-    let mensaje = '';
-    let imagen = '';
-
-    if (puntaje >= 8) {
-        mensaje = `¡<span class="texto-destacado">Felicitaciones</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos!`;
-        imagen = 'images/10.png';
-    } else if (puntaje >= 5 && puntaje <= 7) {
-        mensaje = `<span class="texto-destacado">¡Qué bien!</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos`;
-        imagen = 'images/7.png';
-    } else if (puntaje >= 1 && puntaje <= 4) {
-        mensaje = `<span class="texto-destacado">Hay que estudiar más</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos`;
-        imagen = 'images/4.png';
-    } else {
-        mensaje = `<span class="texto-destacado">Lo siento</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos`;
-        imagen = 'images/0.png';
-    }
-
-    const endContainer = document.createElement('div');
-    endContainer.classList.add('col-lg-8', 'final', 'visible');
-    endContainer.innerHTML = `
-        <div class="card" style="width: 28rem;">
-            <img src="${imagen}" class="card-img-top" alt="calificación">
-            <div class="card-body">
-                <h5 class="card-title mensaje">${mensaje}</h5>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+    const totalPreguntas = 10;
+    let puntaje = 0;
+    let preguntasMostradas = []; // Array para almacenar las preguntas ya mostradas
+    
+    function mostrarResultado() {
+        let mensaje = '';
+        let imagen = '';
+    
+        if (puntaje >= 8) {
+            mensaje = `¡<span class="texto-destacado">Felicitaciones</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos!`;
+            imagen = 'images/10.png';
+        } else if (puntaje >= 5 && puntaje <= 7) {
+            mensaje = `<span class="texto-destacado">¡Qué bien!</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos.`;
+            imagen = 'images/7.png';
+        } else if (puntaje >= 1 && puntaje <= 4) {
+            mensaje = `<span class="texto-destacado">Hay que estudiar más</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos.`;
+            imagen = 'images/4.png';
+        } else {
+            mensaje = `<span class="texto-destacado">Lo siento</span>, conseguiste ${puntaje} de ${totalPreguntas} puntos.`;
+            imagen = 'images/0.png';
+        }
+    
+        const endContainer = document.createElement('div');
+        endContainer.classList.add('col-lg-8', 'final', 'visible');
+        endContainer.innerHTML = `
+            <div class="card" style="width: 28rem;">
+                <img src="${imagen}" class="card-img-top" alt="calificación">
+                <div class="card-body">
+                    <h5 class="card-title mensaje">${mensaje}</h5>
+                    <button type="button" class="btn btn-outline-danger custom-margin" id="back">Salir</button>
+                    <button type="button" class="btn btn-primary" id="repeat">Repetir</button>
+                </div>
             </div>
-        </div>
-    `;
-
-    mainSection.appendChild(endContainer);
-}
-
-function generarNuevaPregunta() {
-    if (contadorPregunta >= totalPreguntas) {
-        mostrarResultado();
-        return;
+        `;
+    
+        mainSection.appendChild(endContainer);
+    
+        document.getElementById('back').addEventListener('click', function() {
+            // Acción para regresar a la pantalla de inicio
+            // Aquí puedes redirigir a la pantalla de inicio o realizar alguna otra acción
+            window.location.href = 'index.html'; // Cambia 'index.html' por la URL de tu pantalla de inicio
+        });
+    
+        document.getElementById('repeat').addEventListener('click', function() {
+            // Acción para repetir el examen
+            resetQuiz();
+        });
     }
-
-    contadorPregunta++;
-    const preguntaSeleccionada = generarPregunta();
-    const respuestasMezcladas = mezclarRespuestas(preguntaSeleccionada);
-
-    testDescContainer.classList.remove('visible');
-    testDescContainer.classList.add('hidden');
-
-    setTimeout(() => {
-        testDescContainer.style.display = 'none';
-
-        const newContainer = document.createElement('div');
-        newContainer.classList.add('col-lg-6', 'new-container', 'visible');
-        newContainer.innerHTML = `
-            <div class="card">
-                <div class="card-header">
-                    <div> Pregunta número  <span class = "texto-destacado">#${contadorPregunta} </span> </div>
-                    <div id="temporizador" class="temporizador">15</div>
-                </div>
-                <div class="card-body bodycardpregunta">
-                    <h5 class="card-title pb-2">${preguntaSeleccionada.pregunta}</h5>
-                    ${respuestasMezcladas.map(opcion => `
-                        <button class="botonsito opcion" data-value="${opcion}">${opcion}</button>
-                    `).join('')}
-                </div>
-                <div class="card-footer custom-position-footer">
-                    <span class = "text-muted"> ${contadorPregunta} de ${totalPreguntas} preguntas </span>
-                    <button type="button" class="btn btn-primary" id="siguiente" style="display: none;">Continuar</button>
-                </div>
-            </div>`;
+    
+    function resetQuiz() {
+        contadorPregunta = 0;
+        puntaje = 0;
+        preguntasMostradas = [];
+        mainSection.innerHTML = ''; // Limpia la sección principal
+        generarNuevaPregunta();
+    }
+    
+    function generarPregunta() {
+        let preguntaRandom;
+        do {
+            preguntaRandom = preguntas[Math.floor(Math.random() * preguntas.length)];
+        } while (preguntasMostradas.includes(preguntaRandom)); // Verifica que la pregunta no se haya mostrado antes
+    
+        preguntasMostradas.push(preguntaRandom); // Añade la pregunta al array de preguntas mostradas
+        return preguntaRandom;
+    }
+    
+    function mezclarRespuestas(pregunta) {
+        const respuestas = [
+            pregunta.respuestaCorrecta,
+            pregunta.respuestaIncorrecta1,
+            pregunta.respuestaIncorrecta2,
+            pregunta.respuestaIncorrecta3
+        ];
+        for (let i = respuestas.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [respuestas[i], respuestas[j]] = [respuestas[j], respuestas[i]];
+        }
+        return respuestas;
+    }
+    
+    function generarNuevaPregunta() {
+        if (contadorPregunta >= totalPreguntas) {
+            mostrarResultado();
+            return;
+        }
+    
+        contadorPregunta++;
+        const preguntaSeleccionada = generarPregunta();
+        const respuestasMezcladas = mezclarRespuestas(preguntaSeleccionada);
+    
+        testDescContainer.classList.remove('visible');
+        testDescContainer.classList.add('hidden');
+    
+        setTimeout(() => {
+            testDescContainer.style.display = 'none';
+    
+            const newContainer = document.createElement('div');
+            newContainer.classList.add('col-lg-6', 'new-container', 'visible');
+            newContainer.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <div> Pregunta número  <span class = "texto-destacado">#${contadorPregunta} </span> </div>
+                        <div id="temporizador" class="temporizador">15</div>
+                    </div>
+                    <div class="card-body bodycardpregunta">
+                        <h5 class="card-title pb-2">${preguntaSeleccionada.pregunta}</h5>
+                        ${respuestasMezcladas.map(opcion => `
+                            <button class="botonsito opcion" data-value="${opcion}">${opcion}</button>
+                        `).join('')}
+                    </div>
+                    <div class="card-footer custom-position-footer">
+                        <span class = "text-muted"> ${contadorPregunta} de ${totalPreguntas} preguntas </span>
+                        <button type="button" class="btn btn-primary" id="siguiente" style="display: none;">Continuar</button>
+                    </div>
+                </div>`;
             console.log(preguntaSeleccionada.respuestaCorrecta);
-        mainSection.appendChild(newContainer);
-
-        const siguientePregunta = newContainer.querySelector('#siguiente');
-        const botonesOpcion = newContainer.querySelectorAll('.opcion');
-
-        const temporizadorElemento = newContainer.querySelector('#temporizador');
-        let tiempoRestante = 15;
-
-        // Temporizador de 15 segundos
-        const intervalo = setInterval(() => {
-            tiempoRestante -= 1;
-            temporizadorElemento.textContent = tiempoRestante;
-            if (tiempoRestante <= 0) {
-                clearInterval(intervalo);
-                desactivarBotones();
-            }
-        }, 1000);
-
-        botonesOpcion.forEach(boton => {
-            boton.addEventListener('click', function () {
-                siguientePregunta.style.display = 'block';
-                const seleccion = boton.getAttribute('data-value');
-
-                clearInterval(intervalo);
-                desactivarBotones(seleccion);
-
-                botonesOpcion.forEach(btn => btn.disabled = true);
-
+            mainSection.appendChild(newContainer);
+    
+            const siguientePregunta = newContainer.querySelector('#siguiente');
+            const botonesOpcion = newContainer.querySelectorAll('.opcion');
+    
+            const temporizadorElemento = newContainer.querySelector('#temporizador');
+            let tiempoRestante = 15;
+    
+            // Temporizador de 15 segundos
+            const intervalo = setInterval(() => {
+                tiempoRestante -= 1;
+                temporizadorElemento.textContent = tiempoRestante;
+                if (tiempoRestante <= 0) {
+                    clearInterval(intervalo);
+                    desactivarBotones();
+                }
+            }, 1000);
+    
+            botonesOpcion.forEach(boton => {
+                boton.addEventListener('click', function () {
+                    siguientePregunta.style.display = 'block';
+                    const seleccion = boton.getAttribute('data-value');
+    
+                    clearInterval(intervalo);
+                    desactivarBotones(seleccion);
+    
+                    botonesOpcion.forEach(btn => btn.disabled = true);
+    
+                    botonesOpcion.forEach(btn => {
+                        if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
+                            btn.classList.add('correcto');
+                        } else if (btn.getAttribute('data-value') === seleccion) {
+                            btn.classList.add('incorrecto');
+                        }
+                    });
+                });
+            });
+    
+            siguientePregunta.addEventListener('click', function () {
+                newContainer.remove();
+                generarNuevaPregunta();
+            });
+    
+            function desactivarBotones(seleccion = null) {
                 botonesOpcion.forEach(btn => {
+                    btn.disabled = true;
                     if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
                         btn.classList.add('correcto');
-                    } else if (btn.getAttribute('data-value') === seleccion) {
+                        if (seleccion === preguntaSeleccionada.respuestaCorrecta) {
+                            puntaje++; 
+                            console.log(puntaje);
+                        }
+                    } else if (!btn.classList.contains('correcto') && !btn.classList.contains('incorrecto')) {
                         btn.classList.add('incorrecto');
                     }
                 });
-            });
-        });
-
-        siguientePregunta.addEventListener('click', function () {
-            newContainer.remove();
+                siguientePregunta.style.display = 'block';
+            }
+        }, 500);
+    }
+    
+    const continuarButton = document.getElementById('continuar');
+    
+    if (continuarButton) {
+        continuarButton.addEventListener('click', function () {
             generarNuevaPregunta();
         });
-
-        function desactivarBotones(seleccion = null) {
-            botonesOpcion.forEach(btn => {
-                btn.disabled = true;
-                if (btn.getAttribute('data-value') === preguntaSeleccionada.respuestaCorrecta) {
-                    btn.classList.add('correcto');
-                    if (seleccion === preguntaSeleccionada.respuestaCorrecta) {
-                        puntaje++; 
-                        console.log(puntaje);
-                    }
-                } else if (!btn.classList.contains('correcto') && !btn.classList.contains('incorrecto')) {
-                    btn.classList.add('incorrecto');
-                }
-            });
-            siguientePregunta.style.display = 'block';
-        }
-    }, 500);
-}
-
-const continuarButton = document.getElementById('continuar');
-
-if (continuarButton) {
-    continuarButton.addEventListener('click', function () {
-        generarNuevaPregunta();
-    });
-}
-
+    }
+    
 
     
 

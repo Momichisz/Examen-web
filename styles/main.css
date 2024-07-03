@@ -251,3 +251,9 @@ li{
     font-weight: 600;
     margin-bottom: 1.4rem;
 }
+
+.final {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
